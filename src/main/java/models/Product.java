@@ -11,28 +11,32 @@ public class Product {
         this.id = id;
         this.name = name;
         this.price = price;
+
     }
 
-
-
-    public double getPrice() {
+    public double getPrice()
+    {
         return price;
     }
 
 
-    public void setSales(int sales){
+    public void setSales(int sales)
+    {
         this.numSales = sales;
     }
 
-    public int getSales() {
+    public int getSales()
+    {
         return numSales;
     }
 
-    public String getId() {
+    public String getId()
+    {
         return id;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 }

@@ -1,6 +1,4 @@
-import models.Order;
-import models.Product;
-import models.User;
+import models.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,7 +11,9 @@ public class ProductManagerTest {
 
     @Before
     public void setUp() {
-        pm = new ProductManagerImpl();
+        //pm = new ProductManagerImpl();
+        this.pm = ProductManagerImpl.getInstance();
+
         pm.addProduct("C1", "Coca-cola zero", 2);
         pm.addProduct("C2", "Coca-cola", 2.5);
         pm.addProduct("B1", "Lomo queso", 3);
@@ -41,8 +41,10 @@ public class ProductManagerTest {
     }
 
     @After
-    public void tearDown() {
-        this.pm = null;
+    public void tearDown()
+    {
+        //this.pm = null;
+        this.pm.clear();
     }
 
     @Test
@@ -57,6 +59,7 @@ public class ProductManagerTest {
     public void addUserTest() {
         Assert.assertEquals(15, pm.numUsers());
         pm.addUser("NIF16", "Pepe", "Electrónico", "pepe.electronico@gmail.com");
+
         pm.addUser("NIF17", "Ramón", "Distorsión", "ramon.distorsion@gmail.com");
         Assert.assertEquals(17, pm.numUsers());
     }
@@ -66,9 +69,9 @@ public class ProductManagerTest {
     public void productByPriceTest() {
         List<Product> products = pm.getProductsByPrice();
         Assert.assertEquals(3.5, products.get(0).getPrice(), 0.001);
-        Assert.assertEquals(3.0, products.get(1).getPrice(), 0.001);
-        Assert.assertEquals(2.5, products.get(2).getPrice(), 0.001);
-        Assert.assertEquals(2.0, products.get(3).getPrice(), 0.001);
+        Assert.assertEquals(3.0, products.get(2).getPrice(), 0.001);
+        Assert.assertEquals(2.5, products.get(4).getPrice(), 0.001);
+        Assert.assertEquals(2.0, products.get(6).getPrice(), 0.001);
     }
 
 
@@ -119,7 +122,7 @@ public class ProductManagerTest {
         o2.addLP(2, "C2"); //, "coca-cola");
         o2.addLP(5, "B1");
         o2.addLP(1, "CF1");
-        pm.addOrder(o);
+        pm.addOrder(o2);
 
         Assert.assertEquals(2, pm.numOrders());
 
@@ -142,7 +145,7 @@ public class ProductManagerTest {
     }
 
     @Test
-    public void deliverOrderTest() {
+    public void deliverOrderTest() throws UserNotFoundException, EmptyQueueException {
 
         User u1 = pm.getUser("NIF1");
         User u2 = pm.getUser("NIF2");
@@ -165,7 +168,7 @@ public class ProductManagerTest {
         Assert.assertEquals(2, pm.numOrders());
         Order o1 = pm.deliverOrder();
         Assert.assertEquals(1, pm.numOrders());
-        Assert.assertEquals("NIF1", o1.getUser());
+        Assert.assertEquals("NIF1", o1.getUser().getNif());
         Assert.assertEquals(1, o1.getUser().numOrders());
 
         Assert.assertEquals(2, c1.getSales());
@@ -176,7 +179,7 @@ public class ProductManagerTest {
 
         Order o2 = pm.deliverOrder();
         Assert.assertEquals(0, pm.numOrders());
-        Assert.assertEquals("NIF2", o2.getUser());
+        Assert.assertEquals("NIF2", o2.getUser().getNif());
         Assert.assertEquals(1, o2.getUser().numOrders());
 
         Assert.assertEquals(2, c1.getSales());
@@ -189,7 +192,7 @@ public class ProductManagerTest {
 
 
     @Test
-    public void ordersByUserTest() {
+    public void ordersByUserTest() throws UserNotFoundException, EmptyQueueException {
         deliverOrderTest();
         User u1 = pm.getUser("NIF1");
         List<Order> l1 = u1.orders();

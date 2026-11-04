@@ -1,6 +1,4 @@
-import models.Order;
-import models.Product;
-import models.User;
+import models.*;
 
 import java.util.List;
 
@@ -12,7 +10,7 @@ public interface ProductManager {
 
     List<Product> getProductsByPrice();
     List<Product> getProductsBySales();
-    Order deliverOrder();
+    Order deliverOrder() throws UserNotFoundException, EmptyQueueException;
 
     Product getProduct(String id);
     User getUser(String number);
@@ -20,4 +18,6 @@ public interface ProductManager {
     int numOrders();
     int numUsers();
     int numProducts();
+
+    void clear();
 }
