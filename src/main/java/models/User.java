@@ -28,7 +28,6 @@ public class User {
         return nif;
     }
 
-
     public List<Order> orders()
     {
         return this.ordersUser;
